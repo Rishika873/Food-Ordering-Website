@@ -55,7 +55,7 @@ const HomePage = () => {
     name: "Spring Rolls with Cheese",
     ingredients: "Tomato, lettuce, capsicum",
     price: "$325.00/$348",
-    image: Seafood1,
+    image: Seafood,
   },
   {
     name: "Shrimp Spicy Soup",

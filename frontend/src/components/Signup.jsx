@@ -1,21 +1,57 @@
 import React, { useState } from "react";
+import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
 
 const SignupPage = () => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const navigate = useNavigate();
 
-  const handleSignup = (e) => {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log({ name, email, password, confirmPassword });
+
+    // Password match validation
+    if (formData.password !== formData.confirmPassword) {
+      toast.error("Passwords do not match!");
+      return;
+    }
+
+    try {
+      const res = await axios.post("http://localhost:5000/signup", {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+      });
+
+      // Show success toast
+      toast.success(res.data.message);
+
+      // Clear form
+      setFormData({ name: "", email: "", password: "", confirmPassword: "" });
+
+      // Redirect to login after 1 second
+      setTimeout(() => {
+        navigate("/login");
+      }, 1000);
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Error occurred");
+    }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-50 to-orange-100 flex items-center justify-center px-4">
-      {/* Signup Card */}
       <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md p-8 sm:p-10">
-        {/* Heading */}
         <h2 className="text-4xl font-bold text-gray-900 mb-2 text-center">
           Create Account
         </h2>
@@ -23,21 +59,17 @@ const SignupPage = () => {
           Join us and order your favorite meals
         </p>
 
-        {/* Form */}
-        <form onSubmit={handleSignup} className="space-y-2">
+        <form onSubmit={handleSubmit} className="space-y-2">
           {/* Name */}
           <div>
-            <label
-              htmlFor="name"
-              className="block text-gray-700 font-medium mb-2"
-            >
+            <label htmlFor="name" className="block text-gray-700 font-medium mb-2">
               Full Name
             </label>
             <input
               id="name"
               type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={formData.name}
+              onChange={handleChange}
               placeholder="John Doe"
               className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none transition"
               required
@@ -46,17 +78,14 @@ const SignupPage = () => {
 
           {/* Email */}
           <div>
-            <label
-              htmlFor="email"
-              className="block text-gray-700 font-medium mb-2"
-            >
+            <label htmlFor="email" className="block text-gray-700 font-medium mb-2">
               Email
             </label>
             <input
               id="email"
               type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={formData.email}
+              onChange={handleChange}
               placeholder="you@example.com"
               className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none transition"
               required
@@ -65,17 +94,14 @@ const SignupPage = () => {
 
           {/* Password */}
           <div>
-            <label
-              htmlFor="password"
-              className="block text-gray-700 font-medium mb-2"
-            >
+            <label htmlFor="password" className="block text-gray-700 font-medium mb-2">
               Password
             </label>
             <input
               id="password"
               type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={formData.password}
+              onChange={handleChange}
               placeholder="Enter password"
               className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none transition"
               required
@@ -84,17 +110,14 @@ const SignupPage = () => {
 
           {/* Confirm Password */}
           <div>
-            <label
-              htmlFor="confirmPassword"
-              className="block text-gray-700 font-medium mb-2"
-            >
+            <label htmlFor="confirmPassword" className="block text-gray-700 font-medium mb-2">
               Confirm Password
             </label>
             <input
               id="confirmPassword"
               type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              value={formData.confirmPassword}
+              onChange={handleChange}
               placeholder="Re-enter password"
               className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none transition"
               required
@@ -104,7 +127,7 @@ const SignupPage = () => {
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full bg-orange-500 text-white py-3 rounded-xl font-semibold text-lg hover:bg-orange-600 shadow-lg transform hover:scale-105 transition-all mt-2"
+            className="w-full bg-orange-500 text-white py-3 rounded-xl font-semibold text-lg hover:bg-orange-600 shadow-lg transform hover:scale-105 transition-all mt-2 cursor-pointer"
           >
             Sign Up
           </button>
@@ -113,14 +136,25 @@ const SignupPage = () => {
         {/* Login Link */}
         <p className="text-center text-gray-500 mt-4">
           Already have an account?{" "}
-          <a
-            href="/login"
-            className="text-orange-600 font-medium hover:underline"
-          >
+          <a href="/login" className="text-orange-600 font-medium hover:underline">
             Login
           </a>
         </p>
       </div>
+
+      {/* Toast Container */}
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
     </div>
   );
 };

@@ -1,13 +1,43 @@
 import React, { useState } from "react";
+import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
 
-  const handleLogin = (e) => {
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+
+  const handleLogin = async (e) => {
     e.preventDefault();
-    // Add your login logic here
-    console.log({ email, password });
+
+    try {
+      const res = await axios.post("http://localhost:5000/login", {
+        email: formData.email,
+        password: formData.password,
+      });
+
+      // Show toast on success
+      toast.success(res.data.message || "Login successful");
+
+      // Clear form (optional)
+      setFormData({ email: "", password: "" });
+
+      // Redirect after 1 second
+      setTimeout(() => {
+        navigate("/"); // redirect to dashboard/home
+      }, 1000);
+
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Login failed");
+    }
   };
 
   return (
@@ -27,8 +57,8 @@ const LoginPage = () => {
             <input
               id="email"
               type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={formData.email}
+              onChange={handleChange}
               placeholder="you@example.com"
               className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-red-600 focus:ring-2 focus:ring-red-200 outline-none transition"
               required
@@ -42,8 +72,8 @@ const LoginPage = () => {
             <input
               id="password"
               type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={formData.password}
+              onChange={handleChange}
               placeholder="Enter your password"
               className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-red-600 focus:ring-2 focus:ring-red-200 outline-none transition"
               required
@@ -65,6 +95,20 @@ const LoginPage = () => {
           </a>
         </p>
       </div>
+
+      {/* Toast Container */}
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
     </div>
   );
 };
