@@ -1,12 +1,21 @@
 import { useState } from 'react'
 import Navbar from './components/Navbar'
+import HomePage from './components/Home'
+import LoginPage from './components/Login'
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import './App.css'
+import SignupPage from './components/Signup';
 function App() {
   return (
     <>
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 to-purple-600 text-white text-3xl font-bold">
-      Tailwind is Working 🎉
-    </div>
+      {/* <Navbar/> */}
+       <Router>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<LoginPage/>} />
+        <Route path="/signup" element={<SignupPage/>} />
+      </Routes>
+    </Router>
     </>
   )
 }
