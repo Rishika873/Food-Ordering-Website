@@ -77,9 +77,9 @@ const handleLogout = async () => {
             {/* Navigation Links */}
             <ul className="hidden md:flex space-x-6 text-gray-700 font-medium text-sm">
               <li className="hover:text-orange-500 cursor-pointer transition-colors">Home</li>
-              <li className="hover:text-orange-500 cursor-pointer transition-colors">About</li>
+              <li className="hover:text-orange-500 cursor-pointer transition-colors">Categories</li>
               <li className="hover:text-orange-500 cursor-pointer transition-colors">Recipes</li>
-              <li className="hover:text-orange-500 cursor-pointer transition-colors">Downloads</li>
+              <li className="hover:text-orange-500 cursor-pointer transition-colors">Restaurants</li>
             </ul>
           </div>
 
