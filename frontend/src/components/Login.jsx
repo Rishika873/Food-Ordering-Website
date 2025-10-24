@@ -19,10 +19,11 @@ const LoginPage = () => {
     e.preventDefault();
 
     try {
-      const res = await axios.post("http://localhost:5000/login", {
+      const res = await axios.post("http://localhost:5000/api/auth/login", {
         email: formData.email,
         password: formData.password,
-      });
+      },
+    { withCredentials: true});
 
       // Show toast on success
       toast.success(res.data.message || "Login successful");

@@ -1,10 +1,53 @@
-import React from "react";
-import { ShoppingCart, Search } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { ShoppingCart, Search, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/logo-svg.svg"
+import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+
+   // Fetch user info when Navbar loads
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/api/auth/me", {
+          withCredentials: true,
+        });
+        setUser(res.data);
+      } catch (err) {
+        setUser(null);
+      }
+    };
+
+    fetchUser();
+  }, []);
+const handleLogout = async () => {
+  try {
+    const res = await axios.post(
+      "http://localhost:5000/api/auth/logout",
+      {},
+      { withCredentials: true }
+    );
+
+    // Show toast
+    toast.success(res.data.message || "Logout successful");
+
+    // Clear user state
+    setUser(null);
+
+    // Navigate after a short delay so toast is visible
+    setTimeout(() => {
+      navigate("/login");
+    }, 800); // 0.8 seconds delay
+  } catch (err) {
+    toast.error(err.response?.data?.message || "Logout failed");
+  }
+};
+
 
   return (
     <nav className="w-full bg-white shadow-sm sticky top-0 z-50">
@@ -49,6 +92,19 @@ const Navbar = () => {
               </span>
             </button>
 
+             {user ? (
+              <div className="flex items-center space-x-2 cursor-pointer">
+                <User size={22} className="text-gray-700" />
+                <span className="font-medium text-gray-700">{user.name}</span>
+                <button
+                  onClick={handleLogout}
+                  className="ml-2 px-8 py-2 bg-orange-500 text-white rounded-full text-sm font-medium hover:bg-orange-600 transition-colors cursor-pointer"
+                >
+                  Logout
+                </button>
+              </div>
+            ) : (
+
             <div className="hidden sm:flex space-x-3">
               <button
                 className="px-8 py-2 border border-gray-300 rounded-full text-sm font-medium hover:border-orange-500 hover:text-orange-500 transition-colors cursor-pointer"
@@ -63,35 +119,23 @@ const Navbar = () => {
                 Signup
               </button>
             </div>
-          </div>
-        </div>
-
-        {/* Mobile Search + Auth */}
-        <div className="md:hidden mt-3 flex flex-col space-y-3">
-          <div className="flex items-center border border-gray-300 rounded-full px-4 py-2 bg-white">
-            <Search size={18} className="text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search recipes..."
-              className="ml-2 outline-none bg-transparent text-sm w-full"
-            />
-          </div>
-          <div className="flex space-x-3">
-            <button
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-full text-sm font-medium hover:border-orange-500 hover:text-orange-500 transition-colors"
-              onClick={() => navigate("/login")}
-            >
-              Login
-            </button>
-            <button
-              className="flex-1 px-4 py-2 bg-orange-500 text-white rounded-full text-sm font-medium hover:bg-orange-600 transition-colors"
-              onClick={() => navigate("/signup")}
-            >
-              Signup
-            </button>
+            )}
           </div>
         </div>
       </div>
+            {/* Toast Container */}
+            <ToastContainer
+              position="top-right"
+              autoClose={3000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="colored"
+            />
     </nav>
   );
 };
