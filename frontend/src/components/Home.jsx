@@ -16,10 +16,17 @@ import Chef02 from "../assets/Chef-02.png"
 import Chef03 from "../assets/Chef-03.png"
 import Chef04 from "../assets/Chef-04.png"
 import Footer from "./Footer";
+// import FoodDetailsPage from "./FoodDetails";
+import { useNavigate } from "react-router-dom";
 
 
 const HomePage = () => {
   const [activeCategory, setActiveCategory] = useState("All");
+  const navigate = useNavigate();
+  const handleCardClick = (item) => {
+  navigate(`/food/${item.name}`, 
+    { state: {item } });
+};
  const menuItems = [
   {
     name: "Crispy Burger",
@@ -228,10 +235,11 @@ const restaurants = [
     </div>
 
     {/* Product Grid */}
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mb-10">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mb-10 ">
       {menuItems.map((item, index) => (
         <div
           key={index}
+          onClick={() => handleCardClick(item)}
           className="bg-orange-50 text-gray-800 rounded-2xl border border-gray-200 overflow-hidden shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-2 hover:border-orange-400 cursor-pointer"
         >
           {/* Image */}
@@ -334,7 +342,7 @@ const restaurants = [
 </section>
 
 {/* Popular Restaurants Section */}
-<section className="bg-white py-2">
+<section className="bg-white py-16">
   <div className="max-w-7xl mx-auto px-6">
     {/* Section Header */}
     <div className="text-center mb-8">
@@ -422,20 +430,17 @@ const restaurants = [
 
 
  {/* Dual Function Section */}
-<section className="bg-white py-20">
+<section className="bg-white py-1">
   <div className="max-w-7xl mx-auto px-6">
     {/* Section Header */}
     <div className="text-center mb-12">
       <h2 className="text-4xl font-bold text-gray-900">
         What Would You Like To Do?
       </h2>
-      <p className="text-gray-500 mt-2 text-sm">
-        Choose your next step — reserve a seat or discover amazing recipes
-      </p>
     </div>
 
     {/* Action Cards */}
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-14">
       {/* Book Table Card */}
       <div className="relative bg-orange-50 rounded-3xl overflow-hidden border border-gray-200 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
         <img
