@@ -39,18 +39,18 @@ export default function CartPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         {/* Header */}
         <div className="mb-8">
-          <button
+          {/* <button
             onClick={() => navigate(-1)}
             className="flex items-center gap-2 text-gray-600 hover:text-orange-600 transition-colors mb-4 group"
           >
             <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
             <span className="font-medium">Continue Shopping</span>
-          </button>
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 flex items-center gap-3">
-            <ShoppingBag className="w-10 h-10 text-orange-500" />
+          </button> */}
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 flex items-center gap-3">
+            <ShoppingBag className="w-6 h-6 text-orange-500" />
             Your Cart
             {cartItems.length > 0 && (
-              <span className="inline-flex items-center justify-center w-10 h-10 bg-orange-500 text-white rounded-full text-lg font-bold">
+              <span className="inline-flex items-center justify-center w-8 h-8 bg-gradient-to-r from-orange-200 to-orange-250 text-black rounded-full text-lg font-bold">
                 {cartItems.length}
               </span>
             )}
@@ -63,7 +63,7 @@ export default function CartPage() {
             <div className="lg:col-span-2 space-y-4">
               {/* Free Delivery Banner */}
               {totalPrice < 299 && (
-                <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-2xl p-4 shadow-lg">
+                <div className="bg-gradient-to-r from-orange-600 to-orange-400 text-white rounded-2xl p-4 shadow-lg">
                   <div className="flex items-center gap-3">
                     <Gift className="w-6 h-6 flex-shrink-0" />
                     <p className="text-sm font-semibold">
@@ -140,7 +140,7 @@ export default function CartPage() {
                         <div className="flex items-center gap-4">
                           <div className="text-right">
                             <p className="text-xs text-gray-500 font-medium">Total</p>
-                            <p className="text-2xl font-extrabold text-orange-600">
+                            <p className="text-2xl font-bold text-orange-600">
                               ₹{(dish.price * (dish.quantity || 1)).toFixed(2)}
                             </p>
                           </div>
@@ -148,7 +148,7 @@ export default function CartPage() {
                           {/* Remove Button */}
                           <button
                             onClick={() => handleRemove(dish)}
-                            className="flex items-center gap-2 bg-red-50 hover:bg-red-500 text-red-500 hover:text-white px-4 py-2 rounded-full font-semibold transition-all duration-200 shadow-sm hover:shadow-md group"
+                            className="flex items-center gap-2 bg-red-50 hover:bg-red-500 text-red-500 hover:text-white px-4 py-2 rounded-full font-semibold transition-all duration-200 shadow-sm hover:shadow-md group cursor-pointer"
                           >
                             <Trash2 className="w-4 h-4" />
                             <span className="hidden sm:inline">Remove</span>
@@ -203,7 +203,7 @@ export default function CartPage() {
                   {/* Total */}
                   <div className="flex justify-between items-center bg-gradient-to-r from-orange-50 to-orange-100 rounded-xl p-4 border-2 border-orange-200">
                     <span className="text-xl font-bold text-gray-900">Total Amount</span>
-                    <span className="text-3xl font-extrabold text-orange-600">
+                    <span className="text-3xl font-bold text-orange-600">
                       ₹{finalTotal.toFixed(2)}
                     </span>
                   </div>
@@ -212,7 +212,7 @@ export default function CartPage() {
                 {/* Checkout Button */}
                 <button
                   onClick={() => navigate("/checkout")}
-                  className="w-full bg-gradient-to-r from-orange-500 via-orange-600 to-orange-500 text-white py-4 rounded-2xl font-bold text-lg shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2 group"
+                  className="w-full bg-gradient-to-r from-orange-500 via-orange-600 to-orange-500 text-white py-4 rounded-2xl font-bold text-lg shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2 group cursor-pointer"
                 >
                   <span>Proceed to Checkout</span>
                   <ArrowLeft className="w-5 h-5 rotate-180 group-hover:translate-x-1 transition-transform" />
@@ -259,9 +259,9 @@ export default function CartPage() {
               </p>
               <button
                 onClick={() => navigate("/")}
-                className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-8 py-4 rounded-full font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 inline-flex items-center gap-2"
+                className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-8 py-4 rounded-full font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 inline-flex items-center gap-2 cursor-pointer"
               >
-                <ArrowLeft className="w-5 h-5 rotate-180" />
+                {/* <ArrowLeft className="w-5 h-5 rotate-180" /> */}
                 Start Shopping
               </button>
             </div>

@@ -1,17 +1,14 @@
 import React, { useState } from 'react';
 import { CreditCard, Wallet, Banknote, X, Check, ArrowRight, Shield, Clock, Package, ChevronRight, Sparkles } from 'lucide-react';
 import Navbar from './Navbar';
+import { useSelector } from 'react-redux';
 
 export default function CheckoutPage() {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [selectedPayment, setSelectedPayment] = useState('cod');
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const cartItems = [
-    { name: 'Margherita Pizza', price: 299, quantity: 2, image: '🍕' },
-    { name: 'Garlic Bread', price: 149, quantity: 1, image: '🥖' },
-    { name: 'Pasta Alfredo', price: 249, quantity: 1, image: '🍝' }
-  ];
+  const cartItems = useSelector((state) => state.cart.items); 
 
   const totalPrice = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
@@ -72,20 +69,27 @@ export default function CheckoutPage() {
             </div>
 
             {/* Order Items Preview */}
-            <div className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl shadow-lg p-6 text-white">
+            <div className="bg-gradient-to-br from-orange-600 to-orange-500 rounded-2xl shadow-lg p-6 text-white">
               <h3 className="font-bold mb-4 flex items-center gap-2">
                 <Package className="w-5 h-5" /> Your Order
               </h3>
               <div className="space-y-2">
-                {cartItems.map((item, idx) => (
-                  <div key={idx} className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-lg p-3">
-                    <span className="text-3xl">{item.image}</span>
-                    <div className="flex-1">
-                      <p className="font-semibold text-sm">{item.name}</p>
-                      <p className="text-xs text-orange-100">Qty: {item.quantity}</p>
-                    </div>
-                  </div>
-                ))}
+             {cartItems.map((item, idx) => (
+  <div key={idx} className="flex items-center gap-3 bg-white/30 backdrop-blur-sm rounded-lg p-3">
+    {/* Use img tag for actual images */}
+    <img 
+  src={item.image} 
+  alt={item.name} 
+  className="w-16 h-16 object-cover rounded-xl"
+/>
+
+    <div className="flex-1">
+      <p className="font-semibold text-sm">{item.name}</p>
+      <p className="text-xs text-orange-100">Qty: {item.quantity}</p>
+    </div>
+  </div>
+))}
+
               </div>
             </div>
           </div>
@@ -99,28 +103,36 @@ export default function CheckoutPage() {
                   <span className="inline-block w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
                 </h2>
               </div>
+<div className="space-y-4 mb-6 max-h-72 overflow-y-auto pr-2 scrollbar-hide">
+  {cartItems.map((item, index) => (
+    <div
+      key={index}
+      className="flex justify-between items-center p-4 rounded-xl bg-gradient-to-r from-gray-50 to-orange-50 border border-orange-100 hover:shadow-md transition-all group"
+    >
+      <div className="flex items-center gap-4 flex-1">
+        <img
+          src={item.image}
+          alt={item.name}
+          className="w-16 h-16 object-cover rounded-xl group-hover:scale-110 transition-transform"
+        />
+        <div>
+          <p className="font-bold text-gray-900">{item.name}</p>
+          <p className="text-sm text-gray-500 flex items-center gap-1">
+            <span className="font-medium">Qty:</span>
+            <span className="bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full text-xs font-bold">
+              {item.quantity}
+            </span>
+          </p>
+        </div>
+      </div>
+      <p className="font-bold text-xl text-orange-600">₹{(item.price * item.quantity).toFixed(2)}</p>
+    </div>
+  ))}
+</div>
 
-              <div className="space-y-4 mb-6 max-h-72 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-orange-500 scrollbar-track-gray-200">
-                {cartItems.map((item, index) => (
-                  <div key={index} className="flex justify-between items-center p-4 rounded-xl bg-gradient-to-r from-gray-50 to-orange-50 border border-orange-100 hover:shadow-md transition-all group">
-                    <div className="flex items-center gap-4 flex-1">
-                      <span className="text-4xl group-hover:scale-110 transition-transform">{item.image}</span>
-                      <div>
-                        <p className="font-bold text-gray-900">{item.name}</p>
-                        <p className="text-sm text-gray-500 flex items-center gap-1">
-                          <span className="font-medium">Qty:</span>
-                          <span className="bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full text-xs font-bold">
-                            {item.quantity}
-                          </span>
-                        </p>
-                      </div>
-                    </div>
-                    <p className="font-bold text-xl text-orange-600">₹{(item.price * item.quantity).toFixed(2)}</p>
-                  </div>
-                ))}
-              </div>
 
-              <div className="space-y-4 mb-6 p-4 bg-gradient-to-br from-gray-50 to-orange-50 rounded-xl border border-orange-100">
+
+              <div className="space-y-4 mb-4 p-4 bg-gradient-to-br from-gray-50 to-orange-50 rounded-xl border border-orange-100">
                 <div className="flex justify-between text-gray-700">
                   <span className="font-medium">Subtotal</span>
                   <span className="font-semibold">₹{totalPrice.toFixed(2)}</span>
@@ -144,13 +156,16 @@ export default function CheckoutPage() {
                 </div>
               </div>
 
-              <button
-                onClick={handlePlaceOrder}
-                className="w-full bg-gradient-to-r from-orange-500 via-orange-600 to-orange-500 bg-[length:200%_200%] bg-left hover:bg-right text-white py-5 rounded-2xl font-bold text-lg transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-2xl flex items-center justify-center gap-3"
-              >
-                <span>Proceed to Payment</span>
-                <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
-              </button>
+<div className="flex justify-center">
+  <button
+    onClick={handlePlaceOrder}
+    className="w-64 bg-gradient-to-r from-orange-500 via-orange-600 to-orange-500 bg-[length:200%_200%] bg-left hover:bg-right text-white py-5 rounded-2xl font-bold text-lg transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-2xl flex items-center justify-center gap-3 cursor-pointer"
+  >
+    <span>Proceed to Payment</span>
+    <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+  </button>
+</div>
+
 
               <p className="text-center text-sm text-gray-500 mt-4">
                 By placing your order, you agree to our terms

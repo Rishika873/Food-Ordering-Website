@@ -307,7 +307,7 @@ const restaurants = [
 
          {/* Price + Add Button */}
 <div className="flex justify-between items-center">
-  <p className="font-semibold text-orange-500">${item.price}</p>
+  <p className="font-semibold text-orange-500">₹{item.price}</p>
   <button
   onClick={(e) => handleAddToCart(e, item)}
   className={`p-2 rounded-full transition ${
@@ -463,7 +463,7 @@ const restaurants = [
               <button className="flex-1 mr-2 bg-orange-500 text-white py-2 rounded-full font-medium hover:bg-orange-600 transition">
                 Explore Food
               </button>
-              <button className="flex-1 ml-2 border border-orange-400 text-orange-500 py-2 rounded-full font-medium hover:bg-orange-100 transition">
+              <button className="flex-1 ml-2 border border-orange-400 text-orange-500 py-2 rounded-full font-medium hover:bg-orange-100 transition" onClick={navigate('/explore')}>
                 Book Table
               </button>
             </div>

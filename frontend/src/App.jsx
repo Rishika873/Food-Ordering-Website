@@ -9,6 +9,7 @@ import FoodDetailsPage from './components/FoodDetails';
 import CartPage from './components/CartPage';
 import { ToastContainer } from 'react-toastify';
 import CheckoutPage from './components/Checkout';
+import ExploreRestaurantPage from './components/ExploreRestaurant';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/signup" element={<SignupPage/>} />
         <Route path="/cart" element={<CartPage/>} />
         <Route path="/checkout" element={<CheckoutPage/>} />
+        <Route path="/explore" element={<ExploreRestaurantPage/>} />
        <Route path="/food/:name" element={<FoodDetailsPage />} />
     
 
