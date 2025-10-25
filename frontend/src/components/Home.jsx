@@ -460,10 +460,20 @@ const restaurants = [
 
             {/* Buttons */}
             <div className="flex justify-between">
-              <button className="flex-1 mr-2 bg-orange-500 text-white py-2 rounded-full font-medium hover:bg-orange-600 transition">
-                Explore Food
-              </button>
-              <button className="flex-1 ml-2 border border-orange-400 text-orange-500 py-2 rounded-full font-medium hover:bg-orange-100 transition" onClick={navigate('/explore')}>
+     <button
+  className="flex-1 mr-2 bg-orange-500 text-white py-2 rounded-full font-medium hover:bg-orange-600 transition cursor-pointer"
+  onClick={() =>
+    navigate('/explore', {
+      state: { restaurant: res }, // 👈 send restaurant + menu data
+    })
+  }
+>
+  Explore Food
+</button>
+
+
+              <button className="flex-1 ml-2 border border-orange-400 text-orange-500 py-2 rounded-full 
+              font-medium hover:bg-orange-100 transition cursor-pointer" onClick={() => navigate('/booktable')}>
                 Book Table
               </button>
             </div>
@@ -517,7 +527,8 @@ const restaurants = [
           <p className="text-black-600 mb-6">
             Book your favorite spot instantly and enjoy a great dining experience.
           </p>
-          <button className="bg-orange-500 text-white px-8 py-3 rounded-full font-medium hover:bg-orange-600 transition transform hover:scale-105">
+          <button className="bg-orange-500 text-white px-8 py-3 rounded-full font-medium hover:bg-orange-600 transition transform hover:scale-105 cursor-pointer"
+          onClick={() => navigate('/booktable')}>
             Book Now
           </button>
         </div>
@@ -529,6 +540,7 @@ const restaurants = [
           src={Recipe}
           alt="Explore Recipes"
           className="absolute inset-0 w-full h-full object-cover opacity-70"
+          
         />
         <div className="relative p-10 text-center flex flex-col items-center justify-center h-full">
           <div className="bg-orange-100 p-4 rounded-full mb-4">
@@ -553,7 +565,7 @@ const restaurants = [
           <p className="text-black-600 mb-6">
             Browse a curated collection of dishes from your favorite restaurants.
           </p>
-          <button className="bg-orange-500 text-white px-8 py-3 rounded-full font-medium hover:bg-orange-600 transition transform hover:scale-105">
+          <button className="bg-orange-500 text-white px-8 py-3 rounded-full font-medium hover:bg-orange-600 transition transform hover:scale-105 cursor-pointer" onClick={() => navigate('/recipes')}>
             Explore Now
           </button>
         </div>

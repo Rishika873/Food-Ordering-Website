@@ -1,23 +1,36 @@
 import React, { useState } from 'react';
 import { ArrowLeft, Star, Clock, MapPin, Heart, ShoppingCart, Search, Filter, Flame, Award, Leaf, ChevronDown } from 'lucide-react';
 import Navbar from './Navbar';
+import { useLocation } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { addItem, removeItem } from '../redux/cartSlice';
+import { ToastContainer, toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
+
 export default function ExploreRestaurantPage() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [favorites, setFavorites] = useState([]);
   const [cart, setCart] = useState([]);
+  const location = useLocation();
+  const dispatch = useDispatch();
+  const cartItems = useSelector((state) => state.cart.items);
+  const isInCart = (item) => cartItems.some((i) => i.id === item.id);
 
   // Restaurant Info
-  const restaurant = {
-    name: "Spice Garden Restaurant",
-    image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800",
-    rating: 4.5,
-    reviews: 1247,
-    address: "123 Food Street, Downtown, Mumbai",
-    deliveryTime: "30-40 mins",
-    cuisines: ["Indian", "Chinese", "Continental"],
-    features: ["Fast Delivery", "Pure Veg", "Chef's Special"]
-  };
+// Restaurant Info
+const restaurant = {
+  name: location.state?.restaurant?.name || "Restaurant Name",
+  image: location.state?.restaurant?.image || "https://via.placeholder.com/150",
+  address: location.state?.restaurant?.address || "Unknown Address",
+  // Additional details
+  rating: location.state?.restaurant?.rating || 4.5,
+  reviews: 1247,
+  deliveryTime: "30-40 mins",
+  cuisines: ["Indian", "Chinese", "Continental"],
+  features: ["Fast Delivery", "Pure Veg", "Chef's Special"]
+};
+
 
   // Menu Categories
   const categories = [
@@ -153,10 +166,16 @@ export default function ExploreRestaurantPage() {
     );
   };
 
-  const addToCart = (item) => {
-    setCart(prev => [...prev, item]);
-    // Show toast notification here
-  };
+ const handleCartToggle = (item) => {
+  if (isInCart(item)) {
+    dispatch(removeItem(item));
+    toast.info(`${item.name} removed from cart`, { autoClose: 1500 });
+  } else {
+    dispatch(addItem(item));
+    toast.success(`${item.name} added to cart`, { autoClose: 1500 });
+  }
+};
+
 
   return (
     <div className="min-h-screen bg-white">
@@ -200,34 +219,35 @@ export default function ExploreRestaurantPage() {
                   <Clock className="w-4 h-4 text-orange-600" />
                   <span className="text-sm font-medium text-orange-700">{restaurant.deliveryTime}</span>
                 </div>
-                {restaurant.features.map((feature, idx) => (
-                  <span key={idx} className="bg-purple-100 text-purple-700 text-xs font-semibold px-3 py-1 rounded-full">
-                    {feature}
-                  </span>
-                ))}
+              {restaurant.features?.map((feature, idx) => (
+  <span key={idx} className="bg-purple-100 text-purple-700 text-xs font-semibold px-3 py-1 rounded-full">
+    {feature}
+  </span>
+))}
               </div>
 
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-600">Cuisines:</span>
-                {restaurant.cuisines.map((cuisine, idx) => (
-                  <span key={idx} className="text-sm font-medium text-orange-600">
-                    {cuisine}{idx < restaurant.cuisines.length - 1 ? ', ' : ''}
-                  </span>
-                ))}
-              </div>
+            <div className="flex items-center gap-2">
+  <span className="text-sm text-gray-600">Cuisines:</span>
+  {restaurant.cuisines?.map((cuisine, idx) => (
+    <span key={idx} className="text-sm font-medium text-orange-600">
+      {cuisine}{idx < (restaurant.cuisines?.length || 0) - 1 ? ', ' : ''}
+    </span>
+  ))}
+</div>
+
             </div>
 
             {/* Cart Badge */}
-            <div className="relative">
+            {/* <div className="relative"> */}
               {/* <button className="bg-orange-500 text-white p-3 rounded-full hover:bg-orange-600 transition-all shadow-lg hover:shadow-xl">
                 <ShoppingCart className="w-6 h-6" />
               </button> */}
-              {cart.length > 0 && (
+              {/* {cart.length > 0 && (
                 <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center">
                   {cart.length}
                 </span>
-              )}
-            </div>
+              )} */}
+            {/* </div> */}
           </div>
         </div>
       </div>
@@ -362,13 +382,18 @@ export default function ExploreRestaurantPage() {
                     <div>
                       <span className="text-2xl font-bold text-orange-600">₹{item.price}</span>
                     </div>
-                    <button
-                      onClick={() => addToCart(item)}
-                      className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-5 py-2.5 rounded-xl font-semibold hover:from-orange-600 hover:to-orange-700 transition-all shadow-md hover:shadow-lg flex items-center gap-2 group"
-                    >
-                      <ShoppingCart className="w-4 h-4" />
-                      Add to Cart
-                    </button>
+                   <button
+  onClick={() => handleCartToggle(item)}
+  className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold shadow-md hover:shadow-lg transition-all ${
+    isInCart(item)
+      ? "bg-gradient-to-r from-green-700 to-green-600 text-white"
+      : "bg-gradient-to-r from-orange-500 to-orange-600 text-white hover:from-orange-600 hover:to-orange-700"
+  }`}
+>
+  <ShoppingCart className="w-4 h-4" />
+  {isInCart(item) ? "Remove from Cart" : "Add to Cart"}
+</button>
+
                   </div>
                 </div>
               </div>
