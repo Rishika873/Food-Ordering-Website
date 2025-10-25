@@ -3,12 +3,14 @@ import { ShoppingCart, Search, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/logo-svg.svg"
 import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useSelector } from "react-redux";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
+ const cartCount = useSelector(state => state.cart.items.length);
 
    // Fetch user info when Navbar loads
   useEffect(() => {
@@ -56,7 +58,7 @@ const handleLogout = async () => {
           {/* Logo */}
          <div className="flex items-center space-x-2 flex-shrink-0">
 
-    <img src={logo} alt="FoodChef Logo" className="h-32 w-32 object-contain" />
+    <img src={logo} alt="FoodChef Logo" className="h-32 w-32 object-contain cursor-pointer" onClick={() => navigate("/")} />
   
   {/* <h1 className="text-xl font-bold text-gray-800 hidden sm:block">FOODCHEF</h1> */}
 </div>
@@ -76,7 +78,7 @@ const handleLogout = async () => {
 
             {/* Navigation Links */}
             <ul className="hidden md:flex space-x-6 text-gray-700 font-medium text-sm">
-              <li className="hover:text-orange-500 cursor-pointer transition-colors">Home</li>
+              <li className="hover:text-orange-500 cursor-pointer transition-colors" onClick={() => navigate("/")}>Home</li>
               <li className="hover:text-orange-500 cursor-pointer transition-colors">Categories</li>
               <li className="hover:text-orange-500 cursor-pointer transition-colors">Recipes</li>
               <li className="hover:text-orange-500 cursor-pointer transition-colors">Restaurants</li>
@@ -85,10 +87,10 @@ const handleLogout = async () => {
 
           {/* Right Side - Cart & Auth */}
           <div className="flex items-center space-x-3">
-            <button className="p-2 rounded-full hover:bg-orange-50 transition-colors relative">
+            <button className="p-2 rounded-full hover:bg-orange-50 transition-colors relative cursor-pointer" onClick={() => navigate("/cart")}>
               <ShoppingCart size={22} className="text-gray-700" />
               <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                0
+                {cartCount}
               </span>
             </button>
 
@@ -124,7 +126,7 @@ const handleLogout = async () => {
         </div>
       </div>
             {/* Toast Container */}
-            <ToastContainer
+            {/* <ToastContainer
               position="top-right"
               autoClose={3000}
               hideProgressBar={false}
@@ -135,7 +137,7 @@ const handleLogout = async () => {
               draggable
               pauseOnHover
               theme="colored"
-            />
+            /> */}
     </nav>
   );
 };

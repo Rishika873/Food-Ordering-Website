@@ -15,17 +15,42 @@ import Chef01 from "../assets/Chef-01.png"
 import Chef02 from "../assets/Chef-02.png"
 import Chef03 from "../assets/Chef-03.png"
 import Chef04 from "../assets/Chef-04.png"
+import Restaurant from "../assets/restaurant-01.jpg"
+import Restaurant1 from "../assets/restaurant-02.jpg"
+import Restaurant2 from "../assets/restaurant-03.jpg"
+import Recipe from "../assets/recipe.jpg"
 import Footer from "./Footer";
-// import FoodDetailsPage from "./FoodDetails";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import { addItem, removeItem } from "../redux/cartSlice";
+
 
 
 const HomePage = () => {
   const [activeCategory, setActiveCategory] = useState("All");
   const navigate = useNavigate();
+  const [addedItems, setAddedItems] = useState({});
+  const dispatch = useDispatch();
+  const cartItems = useSelector(state => state.cart.items);
+  const isInCart = (itemName) => cartItems.some(i => i.name === itemName);
+
+
   const handleCardClick = (item) => {
   navigate(`/food/${item.name}`, 
     { state: {item } });
+};
+
+// handle add/remove with toast
+const handleAddToCart = (e, item) => {
+  e.stopPropagation(); // prevent card click navigation
+  if (isInCart(item.name)) {
+    dispatch(removeItem(item));
+    toast.info(`${item.name} removed from cart`, { autoClose: 1500 });
+  } else {
+    dispatch(addItem(item));
+    toast.success(`${item.name} added to cart`, { autoClose: 1500 });
+  }
 };
  const menuItems = [
   {
@@ -107,39 +132,41 @@ const restaurants = [
     name: "Urban Dine",
     address: "123 King Street, New York",
     rating: 4.8,
-    image: Chef02,
+    image: Restaurant,
   },
   {
     name: "Taste Avenue",
     address: "45 Elm Road, San Francisco",
     rating: 4.5,
-    image: Chef01,
+    image: Restaurant1,
   },
   {
     name: "Gourmet Garden",
     address: "12 Maple Avenue, Los Angeles",
     rating: 4.9,
-    image: Chef04,
+    image: Restaurant2,
   },
   {
     name: "Spice Villa",
     address: "88 Curry Lane, Chicago",
     rating: 4.6,
-    image: Chef03,
+    image: Restaurant,
   },
   {
     name: "The Grill Spot",
     address: "201 Ocean Drive, Miami",
     rating: 4.7,
-    image: Chef02,
+    image: Restaurant1,
   },
   {
     name: "Sweet Haven",
     address: "33 Dessert Blvd, Seattle",
     rating: 4.4,
-    image: Chef01,
+    image: Restaurant2,
   },
 ];
+
+
 
 
   return (
@@ -239,7 +266,7 @@ const restaurants = [
       {menuItems.map((item, index) => (
         <div
           key={index}
-          onClick={() => handleCardClick(item)}
+          
           className="bg-orange-50 text-gray-800 rounded-2xl border border-gray-200 overflow-hidden shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-2 hover:border-orange-400 cursor-pointer"
         >
           {/* Image */}
@@ -253,7 +280,7 @@ const restaurants = [
           </div>
 
           {/* Card Content */}
-          <div className="p-5 flex flex-col justify-between h-44">
+          <div className="p-5 flex flex-col justify-between h-44" onClick={() => handleCardClick(item)}>
             <div>
              <h3 className="text-lg font-semibold mb-1 text-gray-800">
                 {item.name}
@@ -278,26 +305,45 @@ const restaurants = [
               </div>
             </div>
 
-            {/* Price + Add Button */}
-            <div className="flex justify-between items-center">
-               <p className="font-semibold text-orange-500">${item.price}</p>
-               <button className="p-2 rounded-full bg-orange-100 hover:bg-orange-200 transition">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={2}
-                  stroke="#f97316"
-                  className="w-5 h-5"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M12 4v16m8-8H4"
-                  />
-                </svg>
-              </button>
-            </div>
+         {/* Price + Add Button */}
+<div className="flex justify-between items-center">
+  <p className="font-semibold text-orange-500">${item.price}</p>
+  <button
+  onClick={(e) => handleAddToCart(e, item)}
+  className={`p-2 rounded-full transition ${
+    isInCart(item.name)
+      ? "bg-green-100 hover:bg-green-200"
+      : "bg-orange-100 hover:bg-orange-200"
+  }`}
+>
+  {isInCart(item.name) ? (
+    // Check Icon
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={2}
+      stroke="#12853cff"
+      className="w-5 h-5"
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+    </svg>
+  ) : (
+    // Plus Icon
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={2}
+      stroke="#f92d16ff"
+      className="w-5 h-5"
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+    </svg>
+  )}
+</button>
+</div>
+
           </div>
         </div>
       ))}
@@ -444,9 +490,9 @@ const restaurants = [
       {/* Book Table Card */}
       <div className="relative bg-orange-50 rounded-3xl overflow-hidden border border-gray-200 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
         <img
-          src="/images/book-table.jpg"
+          src={Restaurant}
           alt="Book a Table"
-          className="absolute inset-0 w-full h-full object-cover opacity-30"
+          className="absolute inset-0 w-full h-full object-cover opacity-70"
         />
         <div className="relative p-10 text-center flex flex-col items-center justify-center h-full">
           <div className="bg-orange-100 p-4 rounded-full mb-4">
@@ -468,7 +514,7 @@ const restaurants = [
           <h3 className="text-2xl font-semibold text-gray-900 mb-3">
             Reserve Your Table
           </h3>
-          <p className="text-gray-600 mb-6">
+          <p className="text-black-600 mb-6">
             Book your favorite spot instantly and enjoy a great dining experience.
           </p>
           <button className="bg-orange-500 text-white px-8 py-3 rounded-full font-medium hover:bg-orange-600 transition transform hover:scale-105">
@@ -480,9 +526,9 @@ const restaurants = [
       {/* Explore Recipes Card */}
       <div className="relative bg-orange-50 rounded-3xl overflow-hidden border border-gray-200 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
         <img
-          src="/images/explore-recipes.jpg"
+          src={Recipe}
           alt="Explore Recipes"
-          className="absolute inset-0 w-full h-full object-cover opacity-30"
+          className="absolute inset-0 w-full h-full object-cover opacity-70"
         />
         <div className="relative p-10 text-center flex flex-col items-center justify-center h-full">
           <div className="bg-orange-100 p-4 rounded-full mb-4">
@@ -504,7 +550,7 @@ const restaurants = [
           <h3 className="text-2xl font-semibold text-gray-900 mb-3">
             Explore Delicious Recipes
           </h3>
-          <p className="text-gray-600 mb-6">
+          <p className="text-black-600 mb-6">
             Browse a curated collection of dishes from your favorite restaurants.
           </p>
           <button className="bg-orange-500 text-white px-8 py-3 rounded-full font-medium hover:bg-orange-600 transition transform hover:scale-105">
